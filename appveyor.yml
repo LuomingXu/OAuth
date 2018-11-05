@@ -1,5 +1,5 @@
 version: '{build}'
-os: Windows 10
+image: Visual Studio 2017
 install:
 - ps: |
     Add-Type -AssemblyName System.IO.Compression.FileSystem
