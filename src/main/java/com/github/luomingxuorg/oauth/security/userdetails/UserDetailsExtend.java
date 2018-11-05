@@ -18,7 +18,7 @@
  *  Url: https://github.com/LuomingXuOrg/OAuth
  */
 
-package com.github.luomingxuorg.oauth.security.user;
+package com.github.luomingxuorg.oauth.security.userdetails;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

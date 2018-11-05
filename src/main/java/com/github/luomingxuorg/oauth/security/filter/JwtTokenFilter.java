@@ -35,25 +35,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class JwtTokenFilter extends OncePerRequestFilter
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     *
-     * @param request
-     * @param response
-     * @param chain
-     * @throws ServletException
-     * @throws IOException
-     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain) throws ServletException, IOException
     {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
+
         String token;
         String userName = null;
 
@@ -88,7 +83,7 @@ public class JwtTokenFilter extends OncePerRequestFilter
         {
             if (JwtUtil.isTokenEffective(token))
             {
-                logger.info("Invalid date: " + JwtUtil.getExpirationDate(token));
+                logger.info("Invalid date: " + sdf.format(JwtUtil.getExpirationDate(token)));
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userName, JwtUtil.getUserId(token), JwtUtil.getAuthority(token));

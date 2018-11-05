@@ -22,7 +22,7 @@ package com.github.luomingxuorg.oauth.security.util;
 
 
 import com.github.luomingxuorg.oauth.security.conf.JwtTokenConf;
-import com.github.luomingxuorg.oauth.security.user.UserDetailsExtend;
+import com.github.luomingxuorg.oauth.security.userdetails.UserDetailsExtend;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,7 +41,6 @@ public class JwtUtil
     private static final String CLAIM_KEY_CREATED = "Created";
     private static final String CLAIM_KEY_ROLE_AUTHORITY = "OwnerRolesAuthorities";
 
-    //keytool -genkey -alias jwt -keyalg  RSA -keysize 1024 -validity 365 -keystore jwt.jks
     private static final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("jwt.jks");
     private static final char[] filePassword = JwtTokenConf.JwtPwd.toCharArray();
     private static PrivateKey privateKey = null;

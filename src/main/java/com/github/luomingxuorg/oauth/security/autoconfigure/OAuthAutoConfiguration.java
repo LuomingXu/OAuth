@@ -22,16 +22,23 @@ package com.github.luomingxuorg.oauth.security.autoconfigure;
 
 import com.github.luomingxuorg.oauth.security.conf.JwtTokenConf;
 import com.github.luomingxuorg.oauth.security.conf.SecurityConf;
+import com.github.luomingxuorg.oauth.security.exception.OAuthException;
 import com.github.luomingxuorg.oauth.security.filter.JwtTokenFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -42,16 +49,65 @@ public class OAuthAutoConfiguration
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public OAuthAutoConfiguration()
+    private JwtTokenConf jwtTokenConf;
+
+    public OAuthAutoConfiguration(JwtTokenConf jwtTokenConf)
     {
+        this.jwtTokenConf = jwtTokenConf;
+
         logger.info("Enable OAuth repo success!");
-        System.out.println("                      _\\ /       _  _             ");
-        System.out.println("  |      _ __  o __ (_| X       / \\|_|   _|_|_    ");
-        System.out.println("  |__|_|(_)||| | | |__|/ \\|_|   \\_/| ||_| |_| |  ");
-        System.out.println("                                              0.0.1");
+        System.out.println("  _                    ");
+        System.out.println(" / \\  /\\     _|_ |_  ");
+        System.out.println(" \\_/ /--\\ |_| |_ | | ");
+        System.out.println("                      0.0.1");
+    }
+
+    @PostConstruct
+    public void vaildProperty()
+    {
+        try
+        {
+            //keytool -genkey -alias jwt -keyalg  RSA -keysize 1024 -validity 365 -keystore jwt.jks
+            File file = new ClassPathResource("jwt.jks").getFile();
+
+            if (!(file.exists() && file.length() >= 0))
+            {
+                throw new IOException("Required file: \"jwt.jks\" is not exist in resources dir!");
+            }
+
+            String jwtPwd = jwtTokenConf.getJwtPwd();
+            String aesPwd = jwtTokenConf.getAesConf().getAesPwd();
+            if (jwtPwd == null || jwtPwd.equals(""))
+            {
+                throw new OAuthException("JwtPwd can not be null!");
+            }
+            if (aesPwd == null || aesPwd.equals(""))
+            {
+                throw new OAuthException("Aes pwd can not be null");
+            }
+
+            logger.info("JwtTokenPwd: {}", jwtPwd);
+            logger.info("AesPwd: {}", aesPwd);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            failedStart(e);
+        }
+    }
+
+    private void failedStart(Exception e)
+    {
+        System.out.println("\n***************************");
+        System.out.println("APPLICATION FAILED TO START");
+        System.out.println("***************************\n");
+        System.out.println("Description:");
+        System.out.println(e.getMessage());
+        System.exit(-1);
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public JwtTokenFilter jwtTokenFilter()
     {
         logger.info("Enable jwt token filter success!");
@@ -59,6 +115,7 @@ public class OAuthAutoConfiguration
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public SecurityConf securityConf()
     {
         logger.info("Enable security conf success");
