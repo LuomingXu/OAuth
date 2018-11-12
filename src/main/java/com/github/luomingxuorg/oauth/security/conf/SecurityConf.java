@@ -21,6 +21,7 @@
 package com.github.luomingxuorg.oauth.security.conf;
 
 import com.github.luomingxuorg.oauth.security.filter.JwtTokenFilter;
+import com.github.luomingxuorg.oauth.security.handler.ForbiddenHandler;
 import com.github.luomingxuorg.oauth.security.handler.LogoutSuccessHandler;
 import com.github.luomingxuorg.oauth.security.handler.UnauthorizedHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,7 +40,6 @@ public class SecurityConf extends WebSecurityConfigurerAdapter
 //                .passwordEncoder(new Password());
 //    }
 
-
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception
     {
@@ -47,22 +47,22 @@ public class SecurityConf extends WebSecurityConfigurerAdapter
                 //使用JWT, 不需要csrf
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(new UnauthorizedHandler()).and()
+                .exceptionHandling().accessDeniedHandler(new ForbiddenHandler()).and()
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .anyRequest().permitAll()
                 //已kkn结尾的路径需要进行验证
                 .antMatchers("/**/kkn").authenticated();
 
-        httpSecurity.logout().logoutUrl("/oauth/logout/{userName}/{pwd}")
+        httpSecurity.logout().logoutUrl("/oauth/logout/{userName}/kkn")
                 .logoutSuccessHandler(new LogoutSuccessHandler());
 
-        // 添加JWT filter
+        //JWT filter
         httpSecurity.addFilterBefore(
                 new JwtTokenFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
-        // 禁用缓存
+        //禁用缓存
         httpSecurity.headers().cacheControl();
     }
 }

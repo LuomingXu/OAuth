@@ -24,4 +24,6 @@ public interface Token
 {
     String Jwt_Token = "Jwt_Token";
     String Bearer = "Bearer";
+    String User_Id = "User_Id";
+    String Mac_Address = "Mac_Address";
 }

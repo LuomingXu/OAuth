@@ -37,7 +37,7 @@ public class JwtTokenConf
     public static String JwtPwd;
 
     /**
-     * 默认失效时间, 单位: 天
+     * 默认失效时间7天, 单位: 天
      */
     public static Long JwtTokenExpiration = 7L;
 
