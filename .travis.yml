@@ -1,6 +1,8 @@
+os: windows
 language: java
 jdk:
   - oraclejdk8
+#not use maven-gpg-plugin with '-B'
 script: mvn clean package -B
 cache:
   directories:
