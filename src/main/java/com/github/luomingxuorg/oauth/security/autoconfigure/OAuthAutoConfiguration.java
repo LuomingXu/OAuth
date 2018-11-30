@@ -37,8 +37,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Configuration
 @EnableWebSecurity
@@ -68,11 +68,15 @@ public class OAuthAutoConfiguration
         try
         {
             //keytool -genkey -alias jwt -keyalg  RSA -keysize 1024 -validity 365 -keystore jwt.jks
-            File file = new ClassPathResource("jwt.jks").getFile();
+            InputStream file = new ClassPathResource("jwt.jks").getInputStream();
 
-            if (!(file.exists() && file.length() >= 0))
+            if (file.available() == 0)
             {
                 throw new IOException("Required file: \"jwt.jks\" is not exist in resources dir!");
+            }
+            else
+            {
+                System.out.println(String.format("jwt.jks has %s bytes", file.available()));
             }
 
             String jwtPwd = jwtTokenConf.getJwtPwd();

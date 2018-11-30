@@ -26,10 +26,10 @@ import com.github.luomingxuorg.oauth.security.userdetails.UserDetailsExtend;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -41,7 +41,8 @@ public class JwtUtil
     private static final String CLAIM_KEY_CREATED = "Created";
     private static final String CLAIM_KEY_ROLE_AUTHORITY = "OwnerRolesAuthorities";
 
-    private static final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("jwt.jks");
+    private static final ClassPathResource RESOURCE = new ClassPathResource("jwt.jks");
+
     private static final char[] filePassword = JwtTokenConf.JwtPwd.toCharArray();
     private static PrivateKey privateKey = null;
     private static PublicKey publicKey = null;
@@ -51,7 +52,7 @@ public class JwtUtil
         try
         {
             KeyStore keyStore = KeyStore.getInstance("JKS");
-            keyStore.load(inputStream, filePassword);
+            keyStore.load(RESOURCE.getInputStream(), filePassword);
             privateKey = (PrivateKey) keyStore.getKey("jwt", filePassword);
             publicKey = keyStore.getCertificate("jwt").getPublicKey();
         }
@@ -76,7 +77,10 @@ public class JwtUtil
 
     private static Claims getClaims(String token)
     {
-        if (token == null) { return null; }
+        if (token == null)
+        {
+            return null;
+        }
 
         Claims claims;
         try
@@ -86,7 +90,13 @@ public class JwtUtil
                     .parseClaimsJws(AESenc.decrypt(token))
                     .getBody();
         }
-        catch (Exception e) { claims = null; }
+        catch (Exception e)
+        {
+            claims = null;
+            System.out.println("Get jwt claims failed. ");
+            System.out.println("Cause: " + e.getClass().getSimpleName());
+            System.out.println("Msg: " + e.getMessage());
+        }
 
         return claims;
     }
@@ -118,12 +128,6 @@ public class JwtUtil
         }
 
         return authorities;
-    }
-
-    public static Boolean isTokenEffective(String token)
-    {
-        Date expiration = getExpirationDate(token);
-        return expiration != null && expiration.after(new Date());
     }
 
     public static Long getUserId(String token)

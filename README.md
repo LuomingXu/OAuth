@@ -2,7 +2,7 @@ OAuth
 =
 
 [![Build status](https://ci.appveyor.com/api/projects/status/9c5lpay7diqx3mj5?svg=true)](https://ci.appveyor.com/project/LuomingXu/oauth)
-[![image](https://img.shields.io/badge/maven-v0.0.1-blue.svg)](https://search.maven.org/search?q=g:com.github.luomingxuorg)
+[![image](https://img.shields.io/badge/maven-v0.0.2-blue.svg)](https://search.maven.org/search?q=g:com.github.luomingxuorg)
 [![image](https://img.shields.io/badge/License-Apache__v2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 

@@ -75,13 +75,13 @@ public class JwtTokenFilter extends OncePerRequestFilter
             }
         }
 
-        logger.info("Checking jwt_token's Possessor: " + userName);
-
-        //set authorities by token
-        //trust token, not valid authority from DB.
-        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null)
+        if (token != null)
         {
-            if (JwtUtil.isTokenEffective(token))
+            logger.info("Checking jwt_token's Possessor: " + userName);
+
+            //set authorities by token
+            //trust token, not valid authority from DB.
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null)
             {
                 logger.info("Invalid date: " + sdf.format(JwtUtil.getExpirationDate(token)));
 
@@ -94,10 +94,14 @@ public class JwtTokenFilter extends OncePerRequestFilter
                 //将用户信息存入Holder
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            else
+            else if (userName == null)
             {
-                logger.info("Token is invalid.");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Jwt_Token");
             }
+        }
+        else
+        {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Your request need a Jwt_Token in header");
         }
 
         chain.doFilter(request, response);
