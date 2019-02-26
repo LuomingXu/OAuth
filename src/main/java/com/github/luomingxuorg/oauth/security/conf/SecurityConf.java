@@ -54,9 +54,6 @@ public class SecurityConf extends WebSecurityConfigurerAdapter
                 //已kkn结尾的路径需要进行验证
                 .antMatchers("/**/kkn").authenticated();
 
-        httpSecurity.logout().logoutUrl("/oauth/logout/{userName}/kkn")
-                .logoutSuccessHandler(new LogoutSuccessHandler());
-
         //JWT filter
         httpSecurity.addFilterBefore(
                 new JwtTokenFilter(),
