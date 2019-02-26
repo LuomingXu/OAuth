@@ -75,33 +75,22 @@ public class JwtTokenFilter extends OncePerRequestFilter
             }
         }
 
-        if (token != null)
+        logger.info("Checking jwt_token's Possessor: " + userName);
+
+        //set authorities by token
+        //trust token, not valid authority from DB.
+        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null)
         {
-            logger.info("Checking jwt_token's Possessor: " + userName);
+            logger.info("Invalid date: " + sdf.format(JwtUtil.getExpirationDate(token)));
 
-            //set authorities by token
-            //trust token, not valid authority from DB.
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null)
-            {
-                logger.info("Invalid date: " + sdf.format(JwtUtil.getExpirationDate(token)));
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userName, JwtUtil.getUserId(token), JwtUtil.getAuthority(token));
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userName, JwtUtil.getUserId(token), JwtUtil.getAuthority(token));
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            logger.info("Authenticated, setting security context.");
 
-                logger.info("Authenticated, setting security context.");
-
-                //将用户信息存入Holder
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-            else if (userName == null)
-            {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Jwt_Token");
-            }
-        }
-        else
-        {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Your request need a Jwt_Token in header");
+            //将用户信息存入Holder
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         chain.doFilter(request, response);

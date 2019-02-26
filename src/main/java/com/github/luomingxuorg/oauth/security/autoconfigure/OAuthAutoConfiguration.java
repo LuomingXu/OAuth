@@ -59,7 +59,7 @@ public class OAuthAutoConfiguration
         System.out.println("  _                    ");
         System.out.println(" / \\  /\\     _|_ |_  ");
         System.out.println(" \\_/ /--\\ |_| |_ | | ");
-        System.out.println("                      0.0.2");
+        System.out.println("                      0.1.0");
     }
 
     @PostConstruct

@@ -5,7 +5,7 @@
 
     <groupId>com.github.luomingxuorg</groupId>
     <artifactId>oauth-boot-starter</artifactId>
-    <version>0.0.2</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
     <name>oauth</name>
     <description>Demo project for Spring Boot</description>
