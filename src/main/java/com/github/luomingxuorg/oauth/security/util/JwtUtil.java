@@ -1,5 +1,5 @@
 /*
- *  Copyright 2018-2018 LuomingXuOrg
+ *  Copyright 2018-2019 LuomingXuOrg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public class JwtUtil
         }
     }
 
-    private static final Long expiration = JwtTokenConf.JwtTokenExpiration;
+    private static final Long expiration = JwtTokenConf.JwtTokenExpiration * 24 * 3600 * 1000;
 
     private static Date generateExpirationDate()
     {
@@ -148,19 +148,6 @@ public class JwtUtil
         return claims != null ? new Date((Long) claims.get(CLAIM_KEY_CREATED)) : null;
     }
 
-    public static <T extends UserDetailsExtend> T getUser(T user, String token)
-    {
-        Claims claims = getClaims(token);
-        if (claims != null)
-        {
-            user.setUsername(claims.getSubject());
-            user.setUserid(Long.valueOf(claims.getId()));
-            user.setAuthority(getAuthority(token));
-        }
-
-        return user;
-    }
-
     /**
      * 生成一个jwt_token
      * <ul>
@@ -176,7 +163,7 @@ public class JwtUtil
         return AESenc.encrypt(Jwts.builder()
                 .setClaims(setClaims(userDetails))
                 .setSubject(userDetails.getUsername())
-                .setId(userDetails.getUserid().toString())
+                .setId(userDetails.getUserId().toString())
                 .setExpiration(generateExpirationDate())
                 .signWith(SignatureAlgorithm.RS512, privateKey)
                 .compact());

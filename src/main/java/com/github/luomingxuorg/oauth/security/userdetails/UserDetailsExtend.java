@@ -1,5 +1,5 @@
 /*
- *  Copyright 2018-2018 LuomingXuOrg
+ *  Copyright 2018-2019 LuomingXuOrg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,9 @@
 
 package com.github.luomingxuorg.oauth.security.userdetails;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 public interface UserDetailsExtend extends UserDetails
 {
-    Long getUserid();
-
-    void setUserid(Long userid);
-
-    void setUsername(String username);
-
-    void setAuthority(Collection<? extends GrantedAuthority> collection);
+    Long getUserId();
 }
