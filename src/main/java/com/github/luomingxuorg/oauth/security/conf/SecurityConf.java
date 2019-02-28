@@ -22,7 +22,6 @@ package com.github.luomingxuorg.oauth.security.conf;
 
 import com.github.luomingxuorg.oauth.security.filter.JwtTokenFilter;
 import com.github.luomingxuorg.oauth.security.handler.ForbiddenHandler;
-import com.github.luomingxuorg.oauth.security.handler.LogoutSuccessHandler;
 import com.github.luomingxuorg.oauth.security.handler.UnauthorizedHandler;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;

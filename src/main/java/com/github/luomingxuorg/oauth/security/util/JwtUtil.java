@@ -22,6 +22,7 @@ package com.github.luomingxuorg.oauth.security.util;
 
 
 import com.github.luomingxuorg.oauth.security.conf.JwtTokenConf;
+import com.github.luomingxuorg.oauth.security.exception.OAuthException;
 import com.github.luomingxuorg.oauth.security.userdetails.UserDetailsExtend;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -39,6 +40,8 @@ public class JwtUtil
 {
     private static final String CLAIM_KEY_OWNER = "KeyOwner";
     private static final String CLAIM_KEY_CREATED = "Created";
+    private static final String CLAIM_KEY_REFRESH_DATE = "RefreshDate";
+    private static final String CLAIM_KEY_REFRESH_REV = "RefreshRev";
     private static final String CLAIM_KEY_ROLE_AUTHORITY = "OwnerRolesAuthorities";
 
     private static final ClassPathResource RESOURCE = new ClassPathResource("jwt.jks");
@@ -106,6 +109,8 @@ public class JwtUtil
         Map<String, Object> claims = new HashMap<>();
         claims.put(CLAIM_KEY_OWNER, userDetails.getUsername());
         claims.put(CLAIM_KEY_CREATED, new Date());
+        claims.put(CLAIM_KEY_REFRESH_DATE, new Date());
+        claims.put(CLAIM_KEY_REFRESH_REV, 0);
         claims.put(CLAIM_KEY_ROLE_AUTHORITY, userDetails.getAuthorities());
 
         return claims;
@@ -148,6 +153,18 @@ public class JwtUtil
         return claims != null ? new Date((Long) claims.get(CLAIM_KEY_CREATED)) : null;
     }
 
+    public static Date getRefreshDate(String token)
+    {
+        Claims claims = getClaims(token);
+        return claims != null ? new Date((Long) claims.get(CLAIM_KEY_REFRESH_DATE)) : null;
+    }
+
+    public static Integer getRefreshRev(String token)
+    {
+        Claims claims = getClaims(token);
+        return claims != null ? (Integer) claims.get(CLAIM_KEY_REFRESH_REV) : null;
+    }
+
     /**
      * 生成一个jwt_token
      * <ul>
@@ -164,6 +181,23 @@ public class JwtUtil
                 .setClaims(setClaims(userDetails))
                 .setSubject(userDetails.getUsername())
                 .setId(userDetails.getUserId().toString())
+                .setExpiration(generateExpirationDate())
+                .signWith(SignatureAlgorithm.RS512, privateKey)
+                .compact());
+    }
+
+    public static String refreshToken(String token)
+    {
+        Claims claims = getClaims(token);
+
+        if (claims == null)
+        {
+            throw new OAuthException("Refresh token failed! Please check your token.");
+        }
+        claims.put(CLAIM_KEY_REFRESH_DATE, new Date());
+        claims.put(CLAIM_KEY_REFRESH_REV, (Integer) claims.get(CLAIM_KEY_REFRESH_REV) + 1);
+        return AESenc.encrypt(Jwts.builder()
+                .setClaims(claims)
                 .setExpiration(generateExpirationDate())
                 .signWith(SignatureAlgorithm.RS512, privateKey)
                 .compact());
