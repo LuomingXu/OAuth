@@ -25,4 +25,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface UserDetailsExtend extends UserDetails
 {
     Long getUserId();
+
+    String getUserToken();
 }
