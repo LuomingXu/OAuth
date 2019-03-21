@@ -1,7 +1,7 @@
-OAuth
+﻿OAuth
 =
 
-[![Build Status](https://travis-ci.org/LuomingXuOrg/OAuth.svg?branch=master)](https://travis-ci.org/LuomingXuOrg/OAuth)
+[![Build Status](https://travis-ci.org/LuomingXu/OAuth.svg?branch=master)](https://travis-ci.org/LuomingXu/OAuth)
 [![Build status](https://ci.appveyor.com/api/projects/status/9c5lpay7diqx3mj5?svg=true)](https://ci.appveyor.com/project/LuomingXu/oauth)
 [![image](https://img.shields.io/badge/maven-v0.1.0-blue.svg)](https://search.maven.org/search?q=g:com.github.luomingxuorg)
 [![image](https://img.shields.io/badge/License-Apache__v2-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
@@ -10,17 +10,14 @@ OAuth
 利用spring-security实现的权限控制
 
 
-<!-- TOC -->
-
-- [使用说明](#使用说明)
-    - [controller](#controller)
-    - [resources](#resources)
-    - [application.yml](#applicationyml)
-- [依赖](#依赖)
-    - [maven dependency](#maven-dependency)
-    - [gradle](#gradle)
-
-<!-- /TOC -->
+- [OAuth](#oauth)
+     - [使用说明](#使用说明)
+       - [controller](#controller)
+       - [resources](#resources)
+       - [application.yml](#applicationyml)
+     - [依赖](#依赖)
+       - [maven dependency](#maven-dependency)
+       - [gradle](#gradle)
 
 
 #### 使用说明
